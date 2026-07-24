@@ -5,77 +5,93 @@ import foodImage from "../assets/food.jpg";
 import folloImage from "../assets/follo.jpg";
 
 function Projects() {
-  const [currentIndex, setCurrentIndex] = useState(0);
-  const [isTransitioning, setIsTransitioning] = useState(false);
-
   const projectsData = [
     {
       id: 1,
-      title: "ML Disease Spread Predictor",
+      title: "Restaurant Website",
       image: msdpImage,
-      description: "Healthcare platform for disease outbreak monitoring and forecasting using ML models.",
+      description: "A dynamic and responsive restaurant website showing a menu, online reservations, customer reviews, and contact information.",
       link: "https://github.com/ali08642/MSDP"
     },
     {
       id: 2,
-      title: "BarberConnect",
+      title: "Chess image recognizer",
       image: barberImage,
-      description: "Full-stack barber booking platform with Google Maps integration.",
+      description: "An AI-powered chess system that recognizes physical pieces and plays autonomously using computer vision and advanced game algorithms.",
       link: "https://github.com/faseehR/Barber-Connect-Website"
     },
     {
       id: 3,
-      title: "FoodXpress",
+      title: "Gesture Snake Game",
       image: foodImage,
-      description: "Android-based food delivery app with AI-powered recommendations.",
+      description: "An innovative twist on the classic snake game, allowing players to control the snake's movements through hand gestures.",
       link: "https://github.com/faseehR/Android-Food-Delivery-App"
     },
     {
       id: 4,
-      title: "Follo (Social Media App)",
+      title: "WiseWay",
       image: folloImage,
-      description: "Social networking platform with profile discovery and media sharing.",
+      description: "A web application that uses advanced algorithms to calculate the most cost-effective route between two points.",
       link: "https://github.com/shariqmunir99/Follo-fe"
     }
   ];
 
-  // Create circular array
-  const extendedData = [...projectsData, ...projectsData, ...projectsData];
   const totalSlides = projectsData.length;
+  const extendedData = [...projectsData, ...projectsData, ...projectsData];
+
+  // How many cards are visible at once — responsive
+  const [itemsPerView, setItemsPerView] = useState(4);
+  useEffect(() => {
+    const updateItemsPerView = () => {
+      const w = window.innerWidth;
+      if (w < 640) setItemsPerView(1);
+      else if (w < 1024) setItemsPerView(2);
+      else setItemsPerView(4);
+    };
+    updateItemsPerView();
+    window.addEventListener("resize", updateItemsPerView);
+    return () => window.removeEventListener("resize", updateItemsPerView);
+  }, []);
+
+  // IMPORTANT: start in the middle copy so wrap-around works both directions
+  const [currentIndex, setCurrentIndex] = useState(totalSlides);
+  const [isTransitioning, setIsTransitioning] = useState(true);
 
   const nextSlide = () => {
-    if (!isTransitioning) {
-      setIsTransitioning(true);
-      setCurrentIndex((prev) => prev + 1);
-    }
+    setIsTransitioning(true);
+    setCurrentIndex((prev) => prev + 1);
   };
 
   const prevSlide = () => {
-    if (!isTransitioning) {
-      setIsTransitioning(true);
-      setCurrentIndex((prev) => prev - 1);
-    }
+    setIsTransitioning(true);
+    setCurrentIndex((prev) => prev - 1);
   };
 
-  // Handle circular loop
   useEffect(() => {
-    if (currentIndex === totalSlides * 2) {
-      setTimeout(() => {
-        setIsTransitioning(false);
-        setCurrentIndex(totalSlides);
-      }, 500);
-    } else if (currentIndex === totalSlides - 1) {
-      setTimeout(() => {
-        setIsTransitioning(false);
-        setCurrentIndex(totalSlides * 2 - 1);
-      }, 500);
-    } else {
+    if (currentIndex >= totalSlides * 2) {
       const timer = setTimeout(() => {
         setIsTransitioning(false);
+        setCurrentIndex(currentIndex - totalSlides);
+      }, 500);
+      return () => clearTimeout(timer);
+    } else if (currentIndex < totalSlides - 1 + 1 && currentIndex === totalSlides - 1) {
+      const timer = setTimeout(() => {
+        setIsTransitioning(false);
+        setCurrentIndex(currentIndex + totalSlides);
       }, 500);
       return () => clearTimeout(timer);
     }
   }, [currentIndex, totalSlides]);
+
+  // Re-enable transition on the next tick after a silent jump
+  useEffect(() => {
+    if (!isTransitioning) {
+      const raf = requestAnimationFrame(() => setIsTransitioning(true));
+      return () => cancelAnimationFrame(raf);
+    }
+  }, [isTransitioning]);
+
+  const slideWidth = 100 / itemsPerView;
 
   return (
     <section
@@ -91,7 +107,7 @@ function Projects() {
       <div className="relative z-10 w-full max-w-6xl mx-auto">
         <div className="h-14"></div>
 
-        <div className="text-center mb-8">
+        <div className="text-center mb-12">
           <h2 className="text-4xl sm:text-5xl font-bold" style={{ color: "var(--text-color)" }}>
             My <span style={{ color: "var(--secondary-color)" }}>Projects</span>
           </h2>
@@ -99,7 +115,7 @@ function Projects() {
                style={{ backgroundColor: "var(--secondary-color)" }}></div>
         </div>
 
-        <div className="h-14"></div>
+        <div className="h-10"></div>
 
         <div className="relative flex items-center justify-center">
           {/* Left Arrow */}
@@ -119,43 +135,62 @@ function Projects() {
 
           {/* Carousel Container */}
           <div className="flex-1 overflow-hidden">
-            <div 
-              className={`flex transition-transform duration-500 ease-in-out ${isTransitioning ? 'transition' : ''}`}
-              style={{ transform: `translateX(-${currentIndex * 33.333}%)` }}
+            <div
+              className="flex"
+              style={{
+                transform: `translateX(-${currentIndex * slideWidth}%)`,
+                transition: isTransitioning ? "transform 500ms ease-in-out" : "none",
+              }}
             >
               {extendedData.map((project, index) => (
-                <div key={index} className="w-1/3 flex-shrink-0 px-4">
-                  <div className="rounded-xl overflow-hidden h-full flex flex-col"
-                       style={{
-                         backgroundColor: "#0d2818",
-                         border: "1px solid #1a4a2e",
-                         boxShadow: "0 4px 15px rgba(0, 0, 0, 0.3)",
-                       }}>
-                    <img 
-                      src={project.image} 
-                      alt={project.title} 
-                      className="w-full h-32 object-cover" 
+                <div
+                  key={index}
+                  className="flex-shrink-0 px-5"
+                  style={{ width: `${slideWidth}%` }}
+                >
+                  <div
+                    className="rounded-xl overflow-hidden h-full flex flex-col"
+                    style={{
+                      backgroundColor: "#0d2818",
+                      border: "1px solid #1a4a2e",
+                      boxShadow: "0 4px 15px rgba(0, 0, 0, 0.3)",
+                      minHeight: "340px",
+                    }}
+                  >
+                    <img
+                      src={project.image}
+                      alt={project.title}
+                      className="w-full h-40 object-cover flex-shrink-0"
                     />
-                    <div className="p-4 flex-1 flex flex-col items-center text-center">
-                      <h3 className="text-base font-bold" style={{ color: "#ffffff" }}>
+                    <div className="p-5 flex flex-col text-center">
+                      <h3 className="text-lg font-bold mb-2" style={{ color: "#ffffff" }}>
                         {project.title}
                       </h3>
-                      
-                      <div className="h-1.5"></div>
-                      
-                      <p className="text-xs leading-relaxed flex-1" style={{ color: "rgba(255, 255, 255, 0.7)" }}>
+
+                      <p
+                        className="text-xs leading-relaxed"
+                        style={{
+                          color: "rgba(255, 255, 255, 0.7)",
+                          display: "-webkit-box",
+                          WebkitLineClamp: 4,
+                          WebkitBoxOrient: "vertical",
+                          overflow: "hidden",
+                        }}
+                      >
                         {project.description}
                       </p>
-                      
-                      <div className="h-1.5"></div>
-                      
-                      <a href={project.link} 
-                         target="_blank" 
-                         rel="noopener noreferrer"
-                         className="inline-flex items-center gap-1 text-sm font-medium transition-all duration-300 hover:opacity-80"
-                         style={{ color: "var(--secondary-color)" }}>
-                        Explore →
-                      </a>
+
+                      <div className="mt-3">
+                        <a
+                          href={project.link}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="inline-flex items-center gap-1 text-sm font-medium transition-all duration-300 hover:opacity-80"
+                          style={{ color: "var(--secondary-color)" }}
+                        >
+                          Explore →
+                        </a>
+                      </div>
                     </div>
                   </div>
                 </div>
