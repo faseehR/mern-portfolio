@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { FaGithub, FaLinkedin, FaTimes } from "react-icons/fa";
+import SharedSection from "./SharedSection";
 import profileImage from "../assets/picture.jpg";
 import resumeImage from "../assets/resume.png";
 
@@ -114,7 +115,8 @@ function Home() {
         </div>
       </section>
 
-     
+      {/* Shared Section - Links to all pages */}
+      <SharedSection />
 
       {/* Resume Modal */}
       {showResume && (
