@@ -4,9 +4,6 @@ import pgcImage from "../assets/pgc.jpg";
 import schoolImage from "../assets/tps.jpg";
 
 function Education() {
-  const [currentIndex, setCurrentIndex] = useState(0);
-  const [isTransitioning, setIsTransitioning] = useState(false);
-
   const educationData = [
     {
       id: 1,
@@ -40,43 +37,62 @@ function Education() {
     }
   ];
 
-  // Create circular array
-  const extendedData = [...educationData, ...educationData, ...educationData];
   const totalSlides = educationData.length;
+  const extendedData = [...educationData, ...educationData, ...educationData];
+
+  // How many cards are visible at once — responsive
+  const [itemsPerView, setItemsPerView] = useState(3);
+  useEffect(() => {
+    const updateItemsPerView = () => {
+      const w = window.innerWidth;
+      if (w < 640) setItemsPerView(1);
+      else if (w < 1024) setItemsPerView(2);
+      else setItemsPerView(3);
+    };
+    updateItemsPerView();
+    window.addEventListener("resize", updateItemsPerView);
+    return () => window.removeEventListener("resize", updateItemsPerView);
+  }, []);
+
+  // Start in the middle copy so wrap-around works in both directions
+  const [currentIndex, setCurrentIndex] = useState(totalSlides);
+  const [isTransitioning, setIsTransitioning] = useState(true);
 
   const nextSlide = () => {
-    if (!isTransitioning) {
-      setIsTransitioning(true);
-      setCurrentIndex((prev) => prev + 1);
-    }
+    setIsTransitioning(true);
+    setCurrentIndex((prev) => prev + 1);
   };
 
   const prevSlide = () => {
-    if (!isTransitioning) {
-      setIsTransitioning(true);
-      setCurrentIndex((prev) => prev - 1);
-    }
+    setIsTransitioning(true);
+    setCurrentIndex((prev) => prev - 1);
   };
 
-  // Handle circular loop
   useEffect(() => {
-    if (currentIndex === totalSlides * 2) {
-      setTimeout(() => {
-        setIsTransitioning(false);
-        setCurrentIndex(totalSlides);
-      }, 500);
-    } else if (currentIndex === totalSlides - 1) {
-      setTimeout(() => {
-        setIsTransitioning(false);
-        setCurrentIndex(totalSlides * 2 - 1);
-      }, 500);
-    } else {
+    if (currentIndex >= totalSlides * 2) {
       const timer = setTimeout(() => {
         setIsTransitioning(false);
+        setCurrentIndex(currentIndex - totalSlides);
+      }, 500);
+      return () => clearTimeout(timer);
+    } else if (currentIndex === totalSlides - 1) {
+      const timer = setTimeout(() => {
+        setIsTransitioning(false);
+        setCurrentIndex(currentIndex + totalSlides);
       }, 500);
       return () => clearTimeout(timer);
     }
   }, [currentIndex, totalSlides]);
+
+  // Re-enable smooth transition on the next tick after a silent jump
+  useEffect(() => {
+    if (!isTransitioning) {
+      const raf = requestAnimationFrame(() => setIsTransitioning(true));
+      return () => cancelAnimationFrame(raf);
+    }
+  }, [isTransitioning]);
+
+  const slideWidth = 100 / itemsPerView;
 
   return (
     <section
@@ -120,24 +136,34 @@ function Education() {
 
           {/* Carousel Container */}
           <div className="flex-1 overflow-hidden">
-            <div 
-              className={`flex transition-transform duration-500 ease-in-out ${isTransitioning ? 'transition' : ''}`}
-              style={{ transform: `translateX(-${currentIndex * 33.333}%)` }}
+            <div
+              className="flex"
+              style={{
+                transform: `translateX(-${currentIndex * slideWidth}%)`,
+                transition: isTransitioning ? "transform 500ms ease-in-out" : "none",
+              }}
             >
               {extendedData.map((edu, index) => (
-                <div key={index} className="w-1/3 flex-shrink-0 px-4">
-                  <div className="rounded-xl overflow-hidden"
-                       style={{
-                         backgroundColor: "#0d2818",
-                         border: "1px solid #1a4a2e",
-                         boxShadow: "0 4px 15px rgba(0, 0, 0, 0.3)",
-                       }}>
-                    <img 
-                      src={edu.image} 
-                      alt={edu.name} 
-                      className="w-full h-32 object-cover" 
+                <div
+                  key={index}
+                  className="flex-shrink-0 px-5"
+                  style={{ width: `${slideWidth}%` }}
+                >
+                  <div
+                    className="rounded-xl overflow-hidden h-full flex flex-col"
+                    style={{
+                      backgroundColor: "#0d2818",
+                      border: "1px solid #1a4a2e",
+                      boxShadow: "0 4px 15px rgba(0, 0, 0, 0.3)",
+                      minHeight: "360px",
+                    }}
+                  >
+                    <img
+                      src={edu.image}
+                      alt={edu.name}
+                      className="w-full h-32 object-cover flex-shrink-0"
                     />
-                    <div className="p-4 text-center">
+                    <div className="p-4 text-center flex flex-col flex-1">
                       <h3 className="text-base font-bold" style={{ color: "#ffffff" }}>
                         {edu.name}
                       </h3>
@@ -147,19 +173,28 @@ function Education() {
                       <p className="text-xs mt-0.5" style={{ color: "rgba(255, 255, 255, 0.6)" }}>
                         {edu.batch}
                       </p>
-                      
+
                       <div className="h-1.5"></div>
-                      
+
                       <p className="text-sm font-semibold" style={{ color: "var(--text-color)" }}>
                         {edu.degree}
                       </p>
                       <p className="text-sm mt-0.5" style={{ color: "#ffffff" }}>
                         {edu.cgpa}
                       </p>
-                      
+
                       <div className="h-1.5"></div>
-                      
-                      <p className="text-xs leading-relaxed" style={{ color: "rgba(255, 255, 255, 0.7)" }}>
+
+                      <p
+                        className="text-xs leading-relaxed"
+                        style={{
+                          color: "rgba(255, 255, 255, 0.7)",
+                          display: "-webkit-box",
+                          WebkitLineClamp: 3,
+                          WebkitBoxOrient: "vertical",
+                          overflow: "hidden",
+                        }}
+                      >
                         {edu.description}
                       </p>
                     </div>
