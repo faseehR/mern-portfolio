@@ -14,28 +14,28 @@ function Projects() {
       title: "ML Disease Spread Predictor",
       image: msdpImage,
       description: "Healthcare platform for disease outbreak monitoring and forecasting using ML models.",
-      link: "#"
+      link: "https://github.com/ali08642/MSDP"
     },
     {
       id: 2,
       title: "BarberConnect",
       image: barberImage,
       description: "Full-stack barber booking platform with Google Maps integration.",
-      link: "#"
+      link: "https://github.com/faseehR/Barber-Connect-Website"
     },
     {
       id: 3,
       title: "FoodXpress",
       image: foodImage,
       description: "Android-based food delivery app with AI-powered recommendations.",
-      link: "#"
+      link: "https://github.com/faseehR/Android-Food-Delivery-App"
     },
     {
       id: 4,
       title: "Follo (Social Media App)",
       image: folloImage,
       description: "Social networking platform with profile discovery and media sharing.",
-      link: "#"
+      link: "https://github.com/shariqmunir99/Follo-fe"
     }
   ];
 
@@ -147,7 +147,7 @@ function Projects() {
                         {project.description}
                       </p>
                       
-                      <div className="h-2.5"></div>
+                      <div className="h-1.5"></div>
                       
                       <a href={project.link} 
                          target="_blank" 
