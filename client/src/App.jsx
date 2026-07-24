@@ -5,9 +5,13 @@ import Education from "./components/Education";
 import Projects from "./components/Projects";
 import Contact from "./components/Contact";
 import Skills from "./components/Skills";
+import Login from "./components/Login";
+import Signup from "./components/Signup";
 function App() {
   return (
     <>
+      <Signup />
+      <Login />
       <Navbar />
       <Home />
       <About />
