@@ -8,30 +8,30 @@ function Projects() {
   const projectsData = [
     {
       id: 1,
-      title: "Restaurant Website",
+      title: "MDSP",
       image: msdpImage,
-      description: "A dynamic and responsive restaurant website showing a menu, online reservations, customer reviews, and contact information.",
+      description: "MDSP is a website that uses DS techniques and Agentic AI using Groq API to predict outbreak of widely occuring diseases like malaria,dengue and diarrhoea.",
       link: "https://github.com/ali08642/MSDP"
     },
     {
       id: 2,
-      title: "Chess image recognizer",
+      title: "Barber Connect Website",
       image: barberImage,
-      description: "An AI-powered chess system that recognizes physical pieces and plays autonomously using computer vision and advanced game algorithms.",
+      description: "Barber Connect is a website that allows users to search salons and barbers and make appointments with barbers for haircut and other services.",
       link: "https://github.com/faseehR/Barber-Connect-Website"
     },
     {
       id: 3,
-      title: "Gesture Snake Game",
+      title: "FoodXpress",
       image: foodImage,
-      description: "An innovative twist on the classic snake game, allowing players to control the snake's movements through hand gestures.",
+      description: "FoodXpres is an android based food delivery app that lets you search restaurants from map and order food from them like Foodpanda.",
       link: "https://github.com/faseehR/Android-Food-Delivery-App"
     },
     {
       id: 4,
-      title: "WiseWay",
+      title: "Follo",
       image: folloImage,
-      description: "A web application that uses advanced algorithms to calculate the most cost-effective route between two points.",
+      description: "Follo is website that allows you to schedule events and like , subscribe , favourite and share your experience with others just like instagram.",
       link: "https://github.com/shariqmunir99/Follo-fe"
     }
   ];
@@ -41,12 +41,20 @@ function Projects() {
 
   // How many cards are visible at once — responsive
   const [itemsPerView, setItemsPerView] = useState(4);
+  const [gapPx, setGapPx] = useState(32);
   useEffect(() => {
     const updateItemsPerView = () => {
       const w = window.innerWidth;
-      if (w < 640) setItemsPerView(1);
-      else if (w < 1024) setItemsPerView(2);
-      else setItemsPerView(4);
+      if (w < 640) {
+        setItemsPerView(1);
+        setGapPx(16);
+      } else if (w < 1024) {
+        setItemsPerView(2);
+        setGapPx(24);
+      } else {
+        setItemsPerView(4);
+        setGapPx(32);
+      }
     };
     updateItemsPerView();
     window.addEventListener("resize", updateItemsPerView);
@@ -117,11 +125,11 @@ function Projects() {
 
         <div className="h-10"></div>
 
-        <div className="relative flex items-center justify-center">
+        <div className="relative flex items-center justify-center gap-4 sm:gap-8 lg:gap-12">
           {/* Left Arrow */}
           <button
             onClick={prevSlide}
-            className="flex-shrink-0 p-3 rounded-full transition-all duration-300 hover:scale-110 z-20 mr-4"
+            className="flex-shrink-0 p-3 rounded-full transition-all duration-300 hover:scale-110 z-20"
             style={{
               backgroundColor: "var(--card-bg)",
               color: "var(--text-color)",
@@ -145,15 +153,18 @@ function Projects() {
               {extendedData.map((project, index) => (
                 <div
                   key={index}
-                  className="flex-shrink-0 px-5"
-                  style={{ width: `${slideWidth}%` }}
+                  className="flex-shrink-0"
+                  style={{
+                    width: `calc(${slideWidth}% - ${gapPx}px)`,
+                    marginRight: `${gapPx}px`,
+                  }}
                 >
                   <div
                     className="rounded-xl overflow-hidden h-full flex flex-col"
                     style={{
                       backgroundColor: "#0d2818",
-                      border: "1px solid #1a4a2e",
-                      boxShadow: "0 4px 15px rgba(0, 0, 0, 0.3)",
+                      border: "1px solid rgba(255, 255, 255, 0.12)",
+                      boxShadow: "0 6px 20px rgba(0, 0, 0, 0.45)",
                       minHeight: "340px",
                     }}
                   >
@@ -201,7 +212,7 @@ function Projects() {
           {/* Right Arrow */}
           <button
             onClick={nextSlide}
-            className="flex-shrink-0 p-3 rounded-full transition-all duration-300 hover:scale-110 z-20 ml-4"
+            className="flex-shrink-0 p-3 rounded-full transition-all duration-300 hover:scale-110 z-20"
             style={{
               backgroundColor: "var(--card-bg)",
               color: "var(--text-color)",

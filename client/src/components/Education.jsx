@@ -42,12 +42,20 @@ function Education() {
 
   // How many cards are visible at once — responsive
   const [itemsPerView, setItemsPerView] = useState(3);
+  const [gapPx, setGapPx] = useState(32);
   useEffect(() => {
     const updateItemsPerView = () => {
       const w = window.innerWidth;
-      if (w < 640) setItemsPerView(1);
-      else if (w < 1024) setItemsPerView(2);
-      else setItemsPerView(3);
+      if (w < 640) {
+        setItemsPerView(1);
+        setGapPx(16);
+      } else if (w < 1024) {
+        setItemsPerView(2);
+        setGapPx(24);
+      } else {
+        setItemsPerView(3);
+        setGapPx(32);
+      }
     };
     updateItemsPerView();
     window.addEventListener("resize", updateItemsPerView);
@@ -118,11 +126,11 @@ function Education() {
 
         <div className="h-14"></div>
 
-        <div className="relative flex items-center justify-center">
+        <div className="relative flex items-center justify-center gap-4 sm:gap-8 lg:gap-12">
           {/* Left Arrow */}
           <button
             onClick={prevSlide}
-            className="flex-shrink-0 p-3 rounded-full transition-all duration-300 hover:scale-110 z-20 mr-4"
+            className="flex-shrink-0 p-3 rounded-full transition-all duration-300 hover:scale-110 z-20"
             style={{
               backgroundColor: "var(--card-bg)",
               color: "var(--text-color)",
@@ -146,15 +154,18 @@ function Education() {
               {extendedData.map((edu, index) => (
                 <div
                   key={index}
-                  className="flex-shrink-0 px-5"
-                  style={{ width: `${slideWidth}%` }}
+                  className="flex-shrink-0"
+                  style={{
+                    width: `calc(${slideWidth}% - ${gapPx}px)`,
+                    marginRight: `${gapPx}px`,
+                  }}
                 >
                   <div
                     className="rounded-xl overflow-hidden h-full flex flex-col"
                     style={{
                       backgroundColor: "#0d2818",
-                      border: "1px solid #1a4a2e",
-                      boxShadow: "0 4px 15px rgba(0, 0, 0, 0.3)",
+                      border: "1px solid rgba(255, 255, 255, 0.12)",
+                      boxShadow: "0 6px 20px rgba(0, 0, 0, 0.45)",
                       minHeight: "360px",
                     }}
                   >
@@ -207,7 +218,7 @@ function Education() {
           {/* Right Arrow */}
           <button
             onClick={nextSlide}
-            className="flex-shrink-0 p-3 rounded-full transition-all duration-300 hover:scale-110 z-20 ml-4"
+            className="flex-shrink-0 p-3 rounded-full transition-all duration-300 hover:scale-110 z-20"
             style={{
               backgroundColor: "var(--card-bg)",
               color: "var(--text-color)",
