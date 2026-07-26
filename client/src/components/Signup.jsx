@@ -1,202 +1,235 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { FaEnvelope, FaLock, FaUser, FaEye, FaEyeSlash, FaArrowLeft } from "react-icons/fa";
+import axios from "axios";
 
 function Signup() {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+
   const navigate = useNavigate();
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+
+    // Check passwords match
     if (password !== confirmPassword) {
       alert("Passwords do not match!");
       return;
     }
-    // Handle signup logic here
-    console.log("Signup attempted with:", { name, email, password });
-    // After successful signup, navigate to login page
-    navigate("/login");
+
+    try {
+      const response = await axios.post(
+        "http://localhost:5000/api/auth/register",
+        {
+          name,
+          email,
+          password,
+        }
+      );
+
+      console.log("Signup Success:", response.data);
+
+      alert(response.data.message);
+
+      // Clear form
+      setName("");
+      setEmail("");
+      setPassword("");
+      setConfirmPassword("");
+
+      // Redirect to Login
+      navigate("/login");
+
+    } catch (error) {
+      console.error("Signup Error:", error);
+
+      if (error.response) {
+        console.log("Status:", error.response.status);
+        console.log("Response:", error.response.data);
+
+        alert(error.response.data.message);
+      } else if (error.request) {
+        alert("No response received from backend.");
+      } else {
+        alert("Error: " + error.message);
+      }
+    }
+  };
+
+  const inputStyle = {
+    backgroundColor: "#ffffff",
+    borderColor: "var(--border-color)",
+    color: "#000000",
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8 relative"
-         style={{ backgroundColor: "var(--primary-color)" }}>
-      
-      {/* Back to Home Button - Top Left */}
+    <div
+      className="min-h-screen flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8 relative"
+      style={{ backgroundColor: "var(--primary-color)" }}
+    >
+      {/* Back to Home Button */}
       <button
         onClick={() => navigate("/")}
-        className="absolute top-6 left-6 sm:top-8 sm:left-8 flex items-center gap-2 px-4 py-2 rounded-lg transition-all duration-300 hover:scale-105"
+        className="absolute top-6 left-6 sm:top-8 sm:left-8 px-4 py-2 rounded-lg transition-all duration-300 hover:scale-105"
         style={{
           backgroundColor: "var(--card-bg)",
           color: "var(--text-secondary)",
           border: "1px solid var(--border-color)",
         }}
       >
-        <FaArrowLeft size={16} />
         <span className="text-sm font-medium">Back to Home</span>
       </button>
 
-      <div className="max-w-lg w-full space-y-8 p-8 sm:p-10 rounded-2xl"
-           style={{
-             backgroundColor: "var(--card-bg)",
-             border: "1px solid var(--border-color)",
-           }}>
+      <div
+        className="max-w-md w-full space-y-8 p-8 sm:p-10 rounded-2xl"
+        style={{
+          backgroundColor: "var(--card-bg)",
+          border: "1px solid var(--border-color)",
+        }}
+      >
         {/* Header */}
         <div className="text-center">
-          <h2 className="text-3xl sm:text-4xl font-bold" style={{ color: "var(--text-color)" }}>
+          <h2
+            className="text-3xl sm:text-4xl font-bold"
+            style={{ color: "var(--text-color)" }}
+          >
             Create Account
           </h2>
-          <p className="mt-2 text-sm sm:text-base" style={{ color: "var(--text-secondary)" }}>
+
+          <p
+            className="mt-2 text-sm sm:text-base"
+            style={{ color: "var(--text-secondary)" }}
+          >
             Join us and start your journey
           </p>
         </div>
 
-        {/* Sign Up Form */}
-        <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
+        {/* Signup Form */}
+        <form className="space-y-5" onSubmit={handleSubmit}>
           {/* Name Field */}
           <div>
-            <label htmlFor="name" className="block text-sm sm:text-base font-medium mb-2"
-                   style={{ color: "var(--text-color)" }}>
+            <label
+              htmlFor="name"
+              className="block text-sm font-medium mb-2"
+              style={{ color: "var(--text-color)" }}
+            >
               Full Name
             </label>
-            <div className="relative">
-              <div className="absolute inset-y-0 left-0 pl-3 sm:pl-4 flex items-center pointer-events-none">
-                <FaUser size={18} className="sm:w-5 sm:h-5" style={{ color: "var(--text-secondary)" }} />
-              </div>
-              <input
-                id="name"
-                name="name"
-                type="text"
-                autoComplete="name"
-                required
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                className="appearance-none rounded-lg relative block w-full px-3 sm:px-4 py-3 sm:py-4 pl-10 sm:pl-12 border-2 focus:outline-none focus:ring-2 focus:ring-[var(--secondary-color)] text-sm sm:text-base"
-                style={{
-                  backgroundColor: "var(--primary-color)",
-                  borderColor: "var(--border-color)",
-                  color: "var(--text-color)",
-                }}
-                placeholder="Enter your full name"
-              />
-            </div>
+
+            <input
+              id="name"
+              type="text"
+              required
+              autoComplete="name"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              placeholder="Enter your full name"
+              className="w-full px-4 py-3 rounded-md border focus:outline-none focus:ring-1 focus:ring-[var(--secondary-color)] placeholder:text-sm placeholder:text-gray-500 text-sm sm:text-base"
+              style={inputStyle}
+            />
           </div>
 
-          {/* Email Field */}
+          {/* Email */}
           <div>
-            <label htmlFor="email" className="block text-sm sm:text-base font-medium mb-2"
-                   style={{ color: "var(--text-color)" }}>
+            <label
+              htmlFor="email"
+              className="block text-sm font-medium mb-2"
+              style={{ color: "var(--text-color)" }}
+            >
               Email Address
             </label>
-            <div className="relative">
-              <div className="absolute inset-y-0 left-0 pl-3 sm:pl-4 flex items-center pointer-events-none">
-                <FaEnvelope size={18} className="sm:w-5 sm:h-5" style={{ color: "var(--text-secondary)" }} />
-              </div>
-              <input
-                id="email"
-                name="email"
-                type="email"
-                autoComplete="email"
-                required
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                className="appearance-none rounded-lg relative block w-full px-3 sm:px-4 py-3 sm:py-4 pl-10 sm:pl-12 border-2 focus:outline-none focus:ring-2 focus:ring-[var(--secondary-color)] text-sm sm:text-base"
-                style={{
-                  backgroundColor: "var(--primary-color)",
-                  borderColor: "var(--border-color)",
-                  color: "var(--text-color)",
-                }}
-                placeholder="Enter your email"
-              />
-            </div>
+
+            <input
+              id="email"
+              type="email"
+              required
+              autoComplete="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder="Enter your email"
+              className="w-full px-4 py-3 rounded-md border focus:outline-none focus:ring-1 focus:ring-[var(--secondary-color)] placeholder:text-sm placeholder:text-gray-500 text-sm sm:text-base"
+              style={inputStyle}
+            />
           </div>
 
-          {/* Password Field */}
+          {/* Password */}
           <div>
-            <label htmlFor="password" className="block text-sm sm:text-base font-medium mb-2"
-                   style={{ color: "var(--text-color)" }}>
-              Password
-            </label>
-            <div className="relative">
-              <div className="absolute inset-y-0 left-0 pl-3 sm:pl-4 flex items-center pointer-events-none">
-                <FaLock size={18} className="sm:w-5 sm:h-5" style={{ color: "var(--text-secondary)" }} />
-              </div>
-              <input
-                id="password"
-                name="password"
-                type={showPassword ? "text" : "password"}
-                autoComplete="new-password"
-                required
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                className="appearance-none rounded-lg relative block w-full px-3 sm:px-4 py-3 sm:py-4 pl-10 sm:pl-12 pr-10 sm:pr-12 border-2 focus:outline-none focus:ring-2 focus:ring-[var(--secondary-color)] text-sm sm:text-base"
-                style={{
-                  backgroundColor: "var(--primary-color)",
-                  borderColor: "var(--border-color)",
-                  color: "var(--text-color)",
-                }}
-                placeholder="Create a password"
-              />
+            <div className="flex items-center justify-between mb-2">
+              <label
+                htmlFor="password"
+                className="block text-sm font-medium"
+                style={{ color: "var(--text-color)" }}
+              >
+                Password
+              </label>
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
-                className="absolute inset-y-0 right-0 pr-3 sm:pr-4 flex items-center"
+                className="text-xs font-medium hover:underline"
                 style={{ color: "var(--text-secondary)" }}
               >
-                {showPassword ? <FaEyeSlash size={18} className="sm:w-5 sm:h-5" /> : <FaEye size={18} className="sm:w-5 sm:h-5" />}
+                {showPassword ? "Hide" : "Show"}
               </button>
             </div>
+
+            <input
+              id="password"
+              type={showPassword ? "text" : "password"}
+              required
+              autoComplete="new-password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              placeholder="Create a password"
+              className="w-full px-4 py-3 rounded-md border focus:outline-none focus:ring-1 focus:ring-[var(--secondary-color)] placeholder:text-sm placeholder:text-gray-500 text-sm sm:text-base"
+              style={inputStyle}
+            />
           </div>
 
-          {/* Confirm Password Field */}
+          {/* Confirm Password */}
           <div>
-            <label htmlFor="confirm-password" className="block text-sm sm:text-base font-medium mb-2"
-                   style={{ color: "var(--text-color)" }}>
-              Confirm Password
-            </label>
-            <div className="relative">
-              <div className="absolute inset-y-0 left-0 pl-3 sm:pl-4 flex items-center pointer-events-none">
-                <FaLock size={18} className="sm:w-5 sm:h-5" style={{ color: "var(--text-secondary)" }} />
-              </div>
-              <input
-                id="confirm-password"
-                name="confirm-password"
-                type={showConfirmPassword ? "text" : "password"}
-                autoComplete="new-password"
-                required
-                value={confirmPassword}
-                onChange={(e) => setConfirmPassword(e.target.value)}
-                className="appearance-none rounded-lg relative block w-full px-3 sm:px-4 py-3 sm:py-4 pl-10 sm:pl-12 pr-10 sm:pr-12 border-2 focus:outline-none focus:ring-2 focus:ring-[var(--secondary-color)] text-sm sm:text-base"
-                style={{
-                  backgroundColor: "var(--primary-color)",
-                  borderColor: "var(--border-color)",
-                  color: "var(--text-color)",
-                }}
-                placeholder="Confirm your password"
-              />
+            <div className="flex items-center justify-between mb-2">
+              <label
+                htmlFor="confirm-password"
+                className="block text-sm font-medium"
+                style={{ color: "var(--text-color)" }}
+              >
+                Confirm Password
+              </label>
               <button
                 type="button"
                 onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                className="absolute inset-y-0 right-0 pr-3 sm:pr-4 flex items-center"
+                className="text-xs font-medium hover:underline"
                 style={{ color: "var(--text-secondary)" }}
               >
-                {showConfirmPassword ? <FaEyeSlash size={18} className="sm:w-5 sm:h-5" /> : <FaEye size={18} className="sm:w-5 sm:h-5" />}
+                {showConfirmPassword ? "Hide" : "Show"}
               </button>
             </div>
+
+            <input
+              id="confirm-password"
+              type={showConfirmPassword ? "text" : "password"}
+              required
+              autoComplete="new-password"
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
+              placeholder="Confirm your password"
+              className="w-full px-4 py-3 rounded-md border focus:outline-none focus:ring-1 focus:ring-[var(--secondary-color)] placeholder:text-sm placeholder:text-gray-500 text-sm sm:text-base"
+              style={inputStyle}
+            />
           </div>
 
-          {/* Sign Up Button */}
+          {/* Signup Button */}
           <button
             type="submit"
-            className="w-full flex justify-center py-3 sm:py-4 px-4 border border-transparent rounded-lg text-sm sm:text-base font-medium transition-all duration-300 hover:opacity-80 hover:scale-[1.02]"
+            className="w-full flex justify-center py-3 px-4 rounded-lg text-sm sm:text-base font-semibold transition-all duration-300 hover:opacity-90 mt-2"
             style={{
               backgroundColor: "var(--secondary-color)",
-              color: "var(--primary-color)",
+              color: "#ffffff",
             }}
           >
             Create Account
@@ -204,10 +237,16 @@ function Signup() {
 
           {/* Login Link */}
           <div className="text-center pt-2">
-            <p className="text-sm sm:text-base" style={{ color: "var(--text-secondary)" }}>
+            <p
+              className="text-sm sm:text-base"
+              style={{ color: "var(--text-secondary)" }}
+            >
               Already have an account?{" "}
-              <Link to="/login" className="font-medium hover:underline"
-                 style={{ color: "#2563eb" }}>
+              <Link
+                to="/login"
+                className="font-semibold hover:underline"
+                style={{ color: "var(--secondary-color)" }}
+              >
                 Login
               </Link>
             </p>
