@@ -4,31 +4,31 @@ import { SiCplusplus, SiNextdotjs, SiExpress, SiDjango, SiFastapi, SiTailwindcss
 
 function Skills() {
   const languages = [
-    { name: "Python", icon: <FaPython size={35} /> },
-    { name: "JavaScript", icon: <FaJs size={35} /> },
-    { name: "Java", icon: <FaJava size={35} /> },
-    { name: "C++", icon: <SiCplusplus size={35} /> },
-    { name: "SQL", icon: <FaDatabase size={35} /> },
-    { name: "PHP", icon: <FaPhp size={35} /> },
+    { name: "Python", icon: <FaPython size={35} />, link: "https://www.python.org/" },
+    { name: "JavaScript", icon: <FaJs size={35} />, link: "https://developer.mozilla.org/en-US/docs/Web/JavaScript" },
+    { name: "Java", icon: <FaJava size={35} />, link: "https://www.java.com/" },
+    { name: "C++", icon: <SiCplusplus size={35} />, link: "https://isocpp.org/" },
+    { name: "SQL", icon: <FaDatabase size={35} />, link: "https://www.w3schools.com/sql/" },
+    { name: "PHP", icon: <FaPhp size={35} />, link: "https://www.php.net/" },
   ];
 
   const frameworks = [
-    { name: "React.js", icon: <FaReact size={35} /> },
-    { name: "Next.js", icon: <SiNextdotjs size={35} /> },
-    { name: "Node.js", icon: <FaNodeJs size={35} /> },
-    { name: "Express.js", icon: <SiExpress size={35} /> },
-    { name: "Django REST", icon: <SiDjango size={35} /> },
-    { name: "FastAPI", icon: <SiFastapi size={35} /> },
-    { name: "React Native", icon: <FaMobile size={35} /> },
-    { name: "Tailwind CSS", icon: <SiTailwindcss size={35} /> },
+    { name: "React.js", icon: <FaReact size={35} />, link: "https://react.dev/" },
+    { name: "Next.js", icon: <SiNextdotjs size={35} />, link: "https://nextjs.org/" },
+    { name: "Node.js", icon: <FaNodeJs size={35} />, link: "https://nodejs.org/" },
+    { name: "Express.js", icon: <SiExpress size={35} />, link: "https://expressjs.com/" },
+    { name: "Django REST", icon: <SiDjango size={35} />, link: "https://www.django-rest-framework.org/" },
+    { name: "FastAPI", icon: <SiFastapi size={35} />, link: "https://fastapi.tiangolo.com/" },
+    { name: "React Native", icon: <FaMobile size={35} />, link: "https://reactnative.dev/" },
+    { name: "Tailwind CSS", icon: <SiTailwindcss size={35} />, link: "https://tailwindcss.com/" },
   ];
 
   const aiTools = [
-    { name: "TensorFlow", icon: <SiTensorflow size={35} /> },
-    { name: "PyTorch", icon: <SiPytorch size={35} /> },
-    { name: "OpenAI API", icon: <FaBrain size={35} /> },
-    { name: "Firebase", icon: <SiFirebase size={35} /> },
-    { name: "Supabase", icon: <SiSupabase size={35} /> },
+    { name: "TensorFlow", icon: <SiTensorflow size={35} />, link: "https://www.tensorflow.org/" },
+    { name: "PyTorch", icon: <SiPytorch size={35} />, link: "https://pytorch.org/" },
+    { name: "OpenAI API", icon: <FaBrain size={35} />, link: "https://platform.openai.com/docs" },
+    { name: "Firebase", icon: <SiFirebase size={35} />, link: "https://firebase.google.com/" },
+    { name: "Supabase", icon: <SiSupabase size={35} />, link: "https://supabase.com/" },
   ];
 
   return (
@@ -58,18 +58,24 @@ function Skills() {
           </h3>
           <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-4">
             {languages.map((skill) => (
-              <div key={skill.name} className="p-4 rounded-xl text-center transition-all duration-300 hover:scale-105 hover:shadow-lg"
-                   style={{
-                     backgroundColor: "var(--card-bg)",
-                     border: "1px solid var(--border-color)",
-                   }}>
+              <a
+                key={skill.name}
+                href={skill.link}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="p-4 rounded-xl text-center transition-all duration-300 hover:scale-105 hover:shadow-lg cursor-pointer block"
+                style={{
+                  backgroundColor: "var(--card-bg)",
+                  border: "1px solid var(--border-color)",
+                }}
+              >
                 <div className="flex justify-center" style={{ color: "var(--secondary-color)" }}>
                   {skill.icon}
                 </div>
                 <p className="mt-2 text-sm font-medium" style={{ color: "var(--text-color)" }}>
                   {skill.name}
                 </p>
-              </div>
+              </a>
             ))}
           </div>
         </div>
@@ -81,18 +87,24 @@ function Skills() {
           </h3>
           <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-4">
             {frameworks.map((skill) => (
-              <div key={skill.name} className="p-4 rounded-xl text-center transition-all duration-300 hover:scale-105 hover:shadow-lg"
-                   style={{
-                     backgroundColor: "var(--card-bg)",
-                     border: "1px solid var(--border-color)",
-                   }}>
+              <a
+                key={skill.name}
+                href={skill.link}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="p-4 rounded-xl text-center transition-all duration-300 hover:scale-105 hover:shadow-lg cursor-pointer block"
+                style={{
+                  backgroundColor: "var(--card-bg)",
+                  border: "1px solid var(--border-color)",
+                }}
+              >
                 <div className="flex justify-center" style={{ color: "var(--secondary-color)" }}>
                   {skill.icon}
                 </div>
                 <p className="mt-2 text-sm font-medium" style={{ color: "var(--text-color)" }}>
                   {skill.name}
                 </p>
-              </div>
+              </a>
             ))}
           </div>
         </div>
@@ -104,18 +116,24 @@ function Skills() {
           </h3>
           <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-4">
             {aiTools.map((skill) => (
-              <div key={skill.name} className="p-4 rounded-xl text-center transition-all duration-300 hover:scale-105 hover:shadow-lg"
-                   style={{
-                     backgroundColor: "var(--card-bg)",
-                     border: "1px solid var(--border-color)",
-                   }}>
+              <a
+                key={skill.name}
+                href={skill.link}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="p-4 rounded-xl text-center transition-all duration-300 hover:scale-105 hover:shadow-lg cursor-pointer block"
+                style={{
+                  backgroundColor: "var(--card-bg)",
+                  border: "1px solid var(--border-color)",
+                }}
+              >
                 <div className="flex justify-center" style={{ color: "var(--secondary-color)" }}>
                   {skill.icon}
                 </div>
                 <p className="mt-2 text-sm font-medium" style={{ color: "var(--text-color)" }}>
                   {skill.name}
                 </p>
-              </div>
+              </a>
             ))}
           </div>
         </div>
