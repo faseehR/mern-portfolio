@@ -35,7 +35,7 @@ function Contact() {
       setLoading(true);
 
       const response = await axios.post(
-        "http://localhost:5000/api/contact",
+        "https://task3backendportfolio.vercel.app/api/contact",
         {
           name,
           email,
