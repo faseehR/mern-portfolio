@@ -24,7 +24,7 @@ function Signup() {
 
     try {
       const response = await axios.post(
-        "http://localhost:5000/api/auth/register",
+        "https://task3backendportfolio.vercel.app/api/auth/register",
         {
           name,
           email,
